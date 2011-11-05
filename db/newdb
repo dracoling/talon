@@ -6,3 +6,4 @@ if ($#ARGV+1 eq 1) {
 } else {
 	print "./newdb <db file>\n";
 }
+

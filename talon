@@ -55,14 +55,14 @@ my $poeirc = POE::Component::IRC->spawn( 	Nick => $cfg->param('nick'),
 						Port => $cfg->param('port'),
 						UseSSL => $cfg->param('ssl') )
 	or die "[kernel] Cannot connect to server.\n";
-
+print "[POE] spawned.\n";
 POE::Session->create(
 	package_states => [
 		main => [ qw( _default _start irc_001 irc_public irc_msg irc_join irc_part irc_quit) ]
 	],
 	heap => { poeirc => $poeirc }
 );
-
+print "[POE] session started\n";
 POE::Kernel->run();
 print "[kernel] Kernel initiated\n";
 
@@ -146,7 +146,7 @@ sub _default {
 			push ( @output, "'$arg'" );
 		}
 	}
-
+    print join ' ', @output, "\n";
 	return 0;
 }
 
