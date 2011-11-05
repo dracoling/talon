@@ -3,3 +3,5 @@ Please see README.talon for installation instructions.
 This is a special branch of talon built for smrsh radio.
 Its probably not what you want.
 
+radio specific installation:
+- icecast/status3.xsl needs to be installed on the icecast server in the web directory.
