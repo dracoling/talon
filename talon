@@ -32,6 +32,10 @@ $cfile = $opts{'c'} if ($opts{'c'});
 my $cfg = new Config::Simple('conf/'.$cfile);
 print "[config] Loaded conf/$cfile.\n";
 
+## Before we go any farther, lets see if the database exists
+unless (-e $cfg->param('db')) { print "Unable to start. Database missing. Maybe you should check the README.\n"; exit; }
+
+
 # Modules hash array.
 my %modules = ( );
 
