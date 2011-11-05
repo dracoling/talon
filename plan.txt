@@ -1,0 +1,25 @@
+The Plan
+aka: Otto von Mattik
+
+
+central server (Otto's brain)
+- database of users,votes,songs
+- accepts from other servers
+  - SONG (stream,timestamp,title,artist) #icecast
+  - LISTENER_BEGIN (stream,timestamp,ip,useragent[,username]) #icecast
+  - LISTENER_END (stream,timestamp,ip[,useragent,username]) #icecast
+  - STREAM_BEGIN (stream,timestamp,name,description) #icecast
+  - STREAM_END (stream,timestamp,name,description) #icecast
+  - VOTE (stream,timestamp,userinfo,vote_value) #ircbot
+  - REQUEST (stream,timestamp,userinfo,song) #ircbot
+- distributes to other servers
+  - Stream start
+  - Stream end
+  - Song start
+  - Song score
+  - user authentication (for icecast tracking and ircbot voting)
+
+icecast server (Otto's speakers)
+mpd + festival (Otto's microphone)
+ircbot (Otto)
+
