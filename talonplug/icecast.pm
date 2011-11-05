@@ -24,18 +24,34 @@ sub on_public {
 		}
 	}
 	if ( $message =~ /^!np/ ) {
-		my $status = $self->_periodic();
-		if (ref($status) eq 'HASH') {
-			my $playing = '';
-			if (defined($status->{'artist'})) { $playing .= $status->{'artist'}; }
-			if (defined($status->{'title'})) {
-				if ($playing ne '') { $playing .= ' - '; }
-				$playing .= $status->{'title'};
+		if ( $message =~ /^!np-fallback/ ) {
+			my $status = $self->_status_fallback();
+			if (ref($status) eq 'HASH') {
+				my $playing = '';
+				if (defined($status->{'artist'})) { $playing .= $status->{'artist'}; }
+				if (defined($status->{'title'})) {
+					if ($playing ne '') { $playing .= ' - '; }
+					$playing .= $status->{'title'};
+				}
+				if ($playing eq '') { $playing = 'unknown track'; }
+				$irc->yield( privmsg => $respond => "[fallback] Now playing: ". $playing);
+			} else {
+				$irc->yield( privmsg => $respond => "The stream appears to be offline. That's really bad, you should probably call someone about that.");
 			}
-			if ($playing eq '') { $playing = 'unknown track'; }
-			$irc->yield( privmsg => $respond => "Now playing: ". $playing);
 		} else {
-			$irc->yield( privmsg => $respond => "The stream appears to be offline.");
+			my $status = $self->_periodic();
+			if (ref($status) eq 'HASH') {
+				my $playing = '';
+				if (defined($status->{'artist'})) { $playing .= $status->{'artist'}; }
+				if (defined($status->{'title'})) {
+					if ($playing ne '') { $playing .= ' - '; }
+					$playing .= $status->{'title'};
+				}
+				if ($playing eq '') { $playing = 'unknown track'; }
+				$irc->yield( privmsg => $respond => "Now playing: ". $playing);
+			} else {
+				$irc->yield( privmsg => $respond => "The stream appears to be offline.");
+			}
 		}
 	}
 	if ( $message =~ /^!radio-status/ ) {
@@ -75,6 +91,16 @@ sub _status {
 	use YAML;
 	my $data = Load($mech->content . "\n");
 	$data = $data->{'/stream'}; #only read data for /stream
+	return $data;
+}
+sub _status_fallback {
+	my ($self) = @_;
+	my $url = 'http://10.41.8.53:8000/status3.xsl';
+	my $mech = WWW::Mechanize->new();
+	$mech->get($url);
+	use YAML;
+	my $data = Load($mech->content . "\n");
+	$data = $data->{'/fallback'}; #only read data for /stream
 	return $data;
 }
 sub about {
