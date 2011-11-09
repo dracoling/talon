@@ -77,9 +77,10 @@ sub _periodic {
 	my ($self) = @_;
 	my $status = $self->_status();
 	if (ref($status) eq 'HASH') {
-		print "[icecast] Stream online.\n"
+		print "[icecast] Stream online.\n";
+                $status = ((ref($status->{'/stream'}) eq 'HASH') ? $status->{'/stream'} : $status->{'/fallback'} );
 	} else {
-		print "[icecast] Stream offline.\n"
+		print "[icecast] Stream offline.\n";
 	}    
 	return $status;
 }
@@ -90,7 +91,8 @@ sub _status {
 	$mech->get($url);
 	use YAML;
 	my $data = Load($mech->content . "\n");
-	$data = $data->{'/stream'}; #only read data for /stream
+        print "Got DATA from Icecast: $data\n";
+	#$data = $data->{'/stream'}; #only read data for /stream
 	return $data;
 }
 sub _status_fallback {
